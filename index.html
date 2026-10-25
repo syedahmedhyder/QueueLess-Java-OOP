@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QueueLess | Virtual Queue</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f6fb;color:#172b4d}
+header{background:#173b63;color:white;padding:22px;text-align:center}
+header h1{margin:0;font-size:29px}
+header p{margin:8px 0 0;color:#d9e8f7}
+main{max-width:650px;margin:28px auto;padding:16px}
+.card{background:white;padding:24px;border-radius:18px;box-shadow:0 5px 20px #173b6312;margin-bottom:18px}
+.label{color:#66758a;font-size:14px}
+#current{font-size:48px;font-weight:bold;color:#087e8b;margin:12px 0}
+button{border:0;border-radius:10px;padding:13px 15px;font-size:15px;font-weight:bold;cursor:pointer;margin:5px 3px}
+.primary{background:#087e8b;color:white}
+.secondary{background:#e5eef7;color:#173b63}
+.danger{background:#fee8e7;color:#a62d2d}
+#message{min-height:22px;color:#087e8b;font-size:14px}
+#queue{padding-left:22px;line-height:1.9}
+footer{text-align:center;color:#718096;font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>QueueLess</h1>
+<p>Smart Virtual Queue Simulator</p>
+</header>
+<main>
+<section class="card">
+<div class="label">NOW SERVING</div>
+<div id="current">No token</div>
+<div class="label">Manage your queue without standing in line.</div>
+<p id="message">Welcome! Generate your first token.</p>
+<button class="primary" onclick="generate()">＋ Generate Token</button>
+<button class="primary" onclick="nextToken()">Call Next</button>
+<button class="secondary" onclick="viewQueue()">View Queue</button>
+<button class="danger" onclick="resetQueue()">Reset Queue</button>
+</section>
+<section class="card">
+<h3>Waiting Queue</h3>
+<p id="count">0 people waiting</p>
+<ol id="queue"><li>No waiting tokens.</li></ol>
+</section>
+</main>
+<footer>QueueLess • Mini Project • OOP Assignment 2</footer>
+<script>
+let nextNumber=1;
+let queue=[];
+let serving=null;
+
+function update(){
+ document.getElementById("current").textContent=
+ serving===null?"No token":"Token "+serving;
+ document.getElementById("count").textContent=
+ queue.length+" people waiting";
+ document.getElementById("queue").innerHTML=
+ queue.length?queue.map(n=>"<li>Token "+n+"</li>").join(""):"<li>No waiting tokens.</li>";
+}
+function generate(){
+ queue.push(nextNumber);
+ document.getElementById("message").textContent=
+ "Token "+nextNumber+" generated successfully!";
+ nextNumber++;
+ update();
+}
+function nextToken(){
+ if(queue.length===0){
+  document.getElementById("message").textContent="No tokens waiting. Generate a token first.";
+  return;
+ }
+ serving=queue.shift();
+ document.getElementById("message").textContent="Now calling Token "+serving+".";
+ update();
+}
+function viewQueue(){
+ update();
+ document.getElementById("message").textContent=
+ queue.length?"Queue updated. "+queue.length+" token(s) waiting.":"The queue is empty.";
+}
+function resetQueue(){
+ if(!confirm("Are you sure you want to reset the queue?"))return;
+ nextNumber=1;queue=[];serving=null;
+ document.getElementById("message").textContent="Queue reset successfully.";
+ update();
+}
+update();
+</script>
+</body>
+</html>
